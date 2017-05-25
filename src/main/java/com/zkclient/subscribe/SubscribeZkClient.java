@@ -8,12 +8,14 @@ import java.util.List;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.BytesPushThroughSerializer;
 
+import com.Config;
+
 
 public class SubscribeZkClient {
 	
 	   private static final int  CLIENT_QTY = 5;
 
-	    private static final String  ZOOKEEPER_SERVER = "11.10.135.35:2181";
+	    private static final String  ZOOKEEPER_SERVER = Config.connectString;
 	    
 	    private static final String  CONFIG_PATH = "/config2";
 	    private static final String  COMMAND_PATH = "/command";

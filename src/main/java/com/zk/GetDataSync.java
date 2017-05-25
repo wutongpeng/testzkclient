@@ -1,4 +1,4 @@
-package com.testzk;
+package com.zk;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +15,8 @@ import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 
+import com.Config;
+
 
 public class GetDataSync implements Watcher{
 	
@@ -24,7 +26,7 @@ public class GetDataSync implements Watcher{
     
 	public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
 		
-		zooKeeper = new ZooKeeper("11.10.135.35:2181",5000,new GetDataSync());
+		zooKeeper = new ZooKeeper(Config.connectString,5000,new GetDataSync());
 		System.out.println(zooKeeper.getState().toString());
 	
 		Thread.sleep(Integer.MAX_VALUE);

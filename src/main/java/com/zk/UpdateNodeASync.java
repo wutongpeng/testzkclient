@@ -1,8 +1,9 @@
-package com.testzk;
+package com.zk;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
+import javax.sound.midi.VoiceStatus;
 
 import org.apache.zookeeper.AsyncCallback;
 import org.apache.zookeeper.CreateMode;
@@ -18,67 +19,48 @@ import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GetDataASync implements Watcher{
-	
+public class UpdateNodeASync implements Watcher{
 	
     private static ZooKeeper zooKeeper;
-    
-    
 	public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
+		zooKeeper = new ZooKeeper("192.168.1.105:2181",5000,new UpdateNodeASync());
+		System.out.println(zooKeeper.getState().toString());
 		
-		zooKeeper = new ZooKeeper("11.10.135.35:2181",5000,new GetDataASync());
-		System.out.println(zooKeeper.getState().toString());	
 		
 		Thread.sleep(Integer.MAX_VALUE);
-		
-		
 		
 
 	}
 	
-	private void doSomething(ZooKeeper zookeeper){
+	private void doSomething(WatchedEvent event){
 
-			
-		zooKeeper.getData("/node_1", true, new IDataCallback(), null);	
+		zooKeeper.setData("/node_6", "234".getBytes(), -1, new IStatCallback(),null);
 	
 	}
 
 	@Override
 	public void process(WatchedEvent event) {
 		// TODO Auto-generated method stub
-
+		
 		if (event.getState()==KeeperState.SyncConnected){
 			if (event.getType()==EventType.None && null==event.getPath()){
-				doSomething(zooKeeper);
-			}else{
-				if (event.getType()==EventType.NodeDataChanged){
-					try {
-						zooKeeper.getData(event.getPath(), true, new IDataCallback(), null);
-					} catch (Exception e) {
-						e.printStackTrace();
-					} 
-				}
+				doSomething(event);
 			}
-		
 		}
 	}
 	
-	static class IDataCallback implements AsyncCallback.DataCallback{
+	static class IStatCallback implements AsyncCallback.StatCallback{
 
 		@Override
-		public void processResult(int rc, String path, Object ctx, byte[] data,
-				Stat stat) {
-			try {
-				System.out.println(new String(zooKeeper.getData(path, true, stat)));
-				System.out.println("stat:"+stat);
-			} catch (KeeperException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		public void processResult(int rc, String path, Object ctx, Stat stat) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("rc="+rc).append("\n");
+			sb.append("path"+path).append("\n");
+			sb.append("ctx="+ctx).append("\n");
+			sb.append("Stat="+stat).append("\n");
+			System.out.println(sb.toString());
 			
-			
-		}
+		}		
 		
 	}
 

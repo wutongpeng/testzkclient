@@ -22,6 +22,8 @@ package com.zkclient.mastersel;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.SerializableSerializer;
 
+import com.Config;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class LeaderSelectorZkClient
 	//启动的服务个数
     private static final int        CLIENT_QTY = 10;
     //zookeeper服务器的地址
-    private static final String     ZOOKEEPER_SERVER = "11.10.135.35:2181";
+    private static final String     ZOOKEEPER_SERVER = Config.connectString;
     
        
     public static void main(String[] args) throws Exception

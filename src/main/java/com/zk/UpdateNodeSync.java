@@ -1,4 +1,4 @@
-package com.testzk;
+package com.zk;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,15 +13,16 @@ import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeleteNodeSync implements Watcher{
+public class UpdateNodeSync implements Watcher{
 	
 	
     private static ZooKeeper zooKeeper;
 	public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
-		zooKeeper = new ZooKeeper("192.168.1.105:2181",5000,new DeleteNodeSync());
+		zooKeeper = new ZooKeeper("192.168.1.105:2181",5000,new UpdateNodeSync());
 		System.out.println(zooKeeper.getState().toString());
 				
 		Thread.sleep(Integer.MAX_VALUE);
@@ -30,7 +31,8 @@ public class DeleteNodeSync implements Watcher{
 	
 	private void doSomething(ZooKeeper zooKeeper){
 		try {
-			zooKeeper.delete("/node_7", -1);
+			Stat stat = zooKeeper.setData("/node_6", "123".getBytes(), -1);
+			System.out.println("stat:"+stat);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (KeeperException e) {

@@ -1,4 +1,4 @@
-package com.testzk;
+package com.zk;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -31,14 +31,14 @@ public class CreateNodeSyncAuth implements Watcher {
 	}
 	
 	/*
-	 * È¨ï¿½ï¿½Ä£Ê½(scheme): ip, digest
-	 * ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½(ID)
-	 * 		ipÈ¨ï¿½ï¿½Ä£Ê½:  ï¿½ï¿½ï¿½ï¿½ï¿½ipï¿½ï¿½Ö·
-	 * 		digestÈ¨ï¿½ï¿½Ä£Ê½: username:Base64(SHA-1(username:password))
-	 * È¨ï¿½ï¿½(permission): create(C), DELETE(D),READ(R), WRITE(W), ADMIN(A) 
-	 * 		×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½Þ£ï¿½ï¿½ï¿½È«È¨ï¿½Þ£ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½
+	 * È¨ÏÞÄ£Ê½(scheme): ip, digest
+	 * ÊÚÈ¨¶ÔÏó(ID)
+	 * 		ipÈ¨ÏÞÄ£Ê½:  ¾ßÌåµÄipµØÖ·
+	 * 		digestÈ¨ÏÞÄ£Ê½: username:Base64(SHA-1(username:password))
+	 * È¨ÏÞ(permission): create(C), DELETE(D),READ(R), WRITE(W), ADMIN(A) 
+	 * 		×¢£ºµ¥¸öÈ¨ÏÞ£¬ÍêÈ«È¨ÏÞ£¬¸´ºÏÈ¨ÏÞ
 	 * 
-	 * È¨ï¿½ï¿½ï¿½ï¿½ï¿½: scheme + ID + permission
+	 * È¨ÏÞ×éºÏ: scheme + ID + permission
 	 * 
 	 * 
 	 * 
@@ -70,7 +70,7 @@ public class CreateNodeSyncAuth implements Watcher {
 	@Override
 	public void process(WatchedEvent event) {
 		// TODO Auto-generated method stub
-		System.out.println("ï¿½Õµï¿½ï¿½Â¼ï¿½ï¿½ï¿½"+event);
+		System.out.println("ÊÕµ½ÊÂ¼þ£º"+event);
 		if (event.getState()==KeeperState.SyncConnected){
 			if (!somethingDone && event.getType()==EventType.None && null==event.getPath()){
 				doSomething();

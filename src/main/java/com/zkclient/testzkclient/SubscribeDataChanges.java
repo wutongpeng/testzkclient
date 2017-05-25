@@ -10,6 +10,8 @@ import org.I0Itec.zkclient.serialize.SerializableSerializer;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 
+import com.Config;
+
 public class SubscribeDataChanges {
 	
 	private static class ZkDataListener implements IZkDataListener{
@@ -32,7 +34,7 @@ public class SubscribeDataChanges {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		ZkClient zc = new ZkClient("11.10.135.35:2181",10000,10000,new BytesPushThroughSerializer());
+		ZkClient zc = new ZkClient(Config.connectString,10000,10000,new BytesPushThroughSerializer());
 		System.out.println("conneted ok!");
 		
 		zc.subscribeDataChanges("/node_20", new ZkDataListener());

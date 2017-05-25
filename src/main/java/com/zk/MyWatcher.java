@@ -1,4 +1,4 @@
-package com.testzk;
+package com.zk;
 
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;

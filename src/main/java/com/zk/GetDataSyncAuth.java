@@ -1,4 +1,4 @@
-package com.testzk;
+package com.zk;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,30 +14,36 @@ import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class UpdateNodeSync implements Watcher{
+
+public class GetDataSyncAuth implements Watcher{
 	
 	
     private static ZooKeeper zooKeeper;
+    private static Stat stat = new Stat();
+    
 	public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
-		zooKeeper = new ZooKeeper("192.168.1.105:2181",5000,new UpdateNodeSync());
+		
+		zooKeeper = new ZooKeeper("192.168.1.105:2181",5000,new GetDataSyncAuth());
 		System.out.println(zooKeeper.getState().toString());
-				
+	
 		Thread.sleep(Integer.MAX_VALUE);
+		
 
 	}
 	
-	private void doSomething(ZooKeeper zooKeeper){
-		try {
-			Stat stat = zooKeeper.setData("/node_6", "123".getBytes(), -1);
-			System.out.println("stat:"+stat);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (KeeperException e) {
-			e.printStackTrace();
-		}
+	private void doSomething(ZooKeeper zookeeper){
+				
+		zooKeeper.addAuthInfo("digest", "jike:1234".getBytes());
+		
+			try {
+				System.out.println(new String(zooKeeper.getData("/node_4", true, stat)));
+			} catch (KeeperException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		
 	}
 
 	@Override
@@ -47,6 +53,18 @@ public class UpdateNodeSync implements Watcher{
 		if (event.getState()==KeeperState.SyncConnected){
 			if (event.getType()==EventType.None && null==event.getPath()){
 				doSomething(zooKeeper);
+			}else{				
+				if (event.getType()==EventType.NodeDataChanged){
+					try {
+						System.out.println(new String(zooKeeper.getData(event.getPath(), true, stat)));
+						System.out.println("stat:"+stat);
+					} catch (KeeperException e) {
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+				}	
 			}
 		
 		}

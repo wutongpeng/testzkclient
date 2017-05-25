@@ -1,12 +1,13 @@
 package com.zkclient.nameservice;
 
+import com.Config;
 import com.zkclient.nameservice.IdMaker.RemoveMethod;
 
 public class TestIdMaker {
 
 	public static void main(String[] args) throws Exception {
 		
-		IdMaker idMaker = new IdMaker("11.10.135.35:2181",
+		IdMaker idMaker = new IdMaker(Config.connectString,
 				"/NameService/IdGen", "ID");
 		idMaker.start();
 

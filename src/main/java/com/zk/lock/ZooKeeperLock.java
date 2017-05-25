@@ -1,4 +1,4 @@
-package com.testzk.lock;
+package com.zk.lock;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

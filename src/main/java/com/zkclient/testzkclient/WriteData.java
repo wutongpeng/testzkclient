@@ -5,10 +5,12 @@ import org.I0Itec.zkclient.serialize.SerializableSerializer;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 
+import com.Config;
+
 public class WriteData {
 
 	public static void main(String[] args) {
-		ZkClient zc = new ZkClient("11.10.135.35:2181",10000,10000,new SerializableSerializer());
+		ZkClient zc = new ZkClient(Config.connectString,10000,10000,new SerializableSerializer());
 		System.out.println("conneted ok!");
 		
 		

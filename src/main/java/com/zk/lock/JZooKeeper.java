@@ -1,10 +1,12 @@
-package com.testzk.lock;
+package com.zk.lock;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
+
+import com.Config;
 
 public class JZooKeeper extends ZooKeeper{
 	public static String connectString;
@@ -117,7 +119,7 @@ public class JZooKeeper extends ZooKeeper{
 	    String lockTime = null;
 	    String waitTime = null;
 	   
-		hosts = "11.10.135.35:2181,11.10.135.35:2182,11.10.135.35:2183";
+		hosts = Config.connectString;
 		timeout = "50000";
 		lockTime = "60";
 		waitTime = "20";

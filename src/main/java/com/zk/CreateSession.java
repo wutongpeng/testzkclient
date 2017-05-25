@@ -1,4 +1,4 @@
-package com.testzk;
+package com.zk;
 
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ public class CreateSession implements Watcher {
 	@Override
 	public void process(WatchedEvent event) {
 		// TODO Auto-generated method stub
-		System.out.println("�յ��¼���"+event);
+		System.out.println("收到事件："+event);
 		if (event.getState()==KeeperState.SyncConnected){
 			
 			if (event.getType()==EventType.None && null==event.getPath()){

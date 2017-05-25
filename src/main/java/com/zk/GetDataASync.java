@@ -1,4 +1,4 @@
-package com.testzk;
+package com.zk;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,39 +13,36 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GetChildrenASync implements Watcher{
+import com.Config;
+
+public class GetDataASync implements Watcher{
+	
 	
     private static ZooKeeper zooKeeper;
     
+    
 	public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
 		
+		zooKeeper = new ZooKeeper(Config.connectString,5000,new GetDataASync());
+		System.out.println(zooKeeper.getState().toString());	
 		
-		zooKeeper = new ZooKeeper("192.168.1.105:2181",5000,new GetChildrenASync());
-		System.out.println(zooKeeper.getState().toString());
-				
 		Thread.sleep(Integer.MAX_VALUE);
+		
+		
 		
 
 	}
 	
 	private void doSomething(ZooKeeper zookeeper){
 
-		
-		try {
-				
-				zooKeeper.getChildren("/", true, new IChildren2Callback(), null);		
 			
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-
-		
+		zooKeeper.getData("/node_1", true, new IDataCallback(), null);	
+	
 	}
 
 	@Override
@@ -55,30 +52,35 @@ public class GetChildrenASync implements Watcher{
 		if (event.getState()==KeeperState.SyncConnected){
 			if (event.getType()==EventType.None && null==event.getPath()){
 				doSomething(zooKeeper);
-			}else{			
-				if (event.getType()==EventType.NodeChildrenChanged){
-					zooKeeper.getChildren(event.getPath(), true, new IChildren2Callback(), null);
-				}			
+			}else{
+				if (event.getType()==EventType.NodeDataChanged){
+					try {
+						zooKeeper.getData(event.getPath(), true, new IDataCallback(), null);
+					} catch (Exception e) {
+						e.printStackTrace();
+					} 
+				}
 			}
+		
 		}
 	}
 	
-	static class IChildren2Callback implements AsyncCallback.Children2Callback{
+	static class IDataCallback implements AsyncCallback.DataCallback{
 
 		@Override
-		public void processResult(int rc, String path, Object ctx,
-				List<String> children, Stat stat) {
+		public void processResult(int rc, String path, Object ctx, byte[] data,
+				Stat stat) {
+			try {
+				System.out.println(new String(zooKeeper.getData(path, true, stat)));
+				System.out.println("stat:"+stat);
+			} catch (KeeperException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			
-			StringBuilder sb = new StringBuilder();
-			sb.append("rc="+rc).append("\n");
-			sb.append("path="+path).append("\n");
-			sb.append("ctx="+ctx).append("\n");
-			sb.append("children="+children).append("\n");
-			sb.append("stat="+stat).append("\n");
-			System.out.println(sb.toString());
 			
 		}
-		
 		
 	}
 

@@ -1,9 +1,8 @@
-package com.testzk;
+package com.zk;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
-import javax.sound.midi.VoiceStatus;
 
 import org.apache.zookeeper.AsyncCallback;
 import org.apache.zookeeper.CreateMode;
@@ -14,53 +13,72 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UpdateNodeASync implements Watcher{
+public class GetChildrenASync implements Watcher{
 	
     private static ZooKeeper zooKeeper;
+    
 	public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
-		zooKeeper = new ZooKeeper("192.168.1.105:2181",5000,new UpdateNodeASync());
+		
+		
+		zooKeeper = new ZooKeeper("192.168.1.105:2181",5000,new GetChildrenASync());
 		System.out.println(zooKeeper.getState().toString());
-		
-		
+				
 		Thread.sleep(Integer.MAX_VALUE);
 		
 
 	}
 	
-	private void doSomething(WatchedEvent event){
+	private void doSomething(ZooKeeper zookeeper){
 
-		zooKeeper.setData("/node_6", "234".getBytes(), -1, new IStatCallback(),null);
-	
+		
+		try {
+				
+				zooKeeper.getChildren("/", true, new IChildren2Callback(), null);		
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		
 	}
 
 	@Override
 	public void process(WatchedEvent event) {
 		// TODO Auto-generated method stub
-		
+
 		if (event.getState()==KeeperState.SyncConnected){
 			if (event.getType()==EventType.None && null==event.getPath()){
-				doSomething(event);
+				doSomething(zooKeeper);
+			}else{			
+				if (event.getType()==EventType.NodeChildrenChanged){
+					zooKeeper.getChildren(event.getPath(), true, new IChildren2Callback(), null);
+				}			
 			}
 		}
 	}
 	
-	static class IStatCallback implements AsyncCallback.StatCallback{
+	static class IChildren2Callback implements AsyncCallback.Children2Callback{
 
 		@Override
-		public void processResult(int rc, String path, Object ctx, Stat stat) {
+		public void processResult(int rc, String path, Object ctx,
+				List<String> children, Stat stat) {
+			
 			StringBuilder sb = new StringBuilder();
 			sb.append("rc="+rc).append("\n");
-			sb.append("path"+path).append("\n");
+			sb.append("path="+path).append("\n");
 			sb.append("ctx="+ctx).append("\n");
-			sb.append("Stat="+stat).append("\n");
+			sb.append("children="+children).append("\n");
+			sb.append("stat="+stat).append("\n");
 			System.out.println(sb.toString());
 			
-		}		
+		}
+		
 		
 	}
 
